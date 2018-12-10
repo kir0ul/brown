@@ -41,36 +41,47 @@ class db():
     def parse_and_commit_to_db(self, xml_text):
         """Parse the data"""
         root = ET.fromstring(xml_text)
-        print("Number of downloaded articles data: {}".format(len(root)))
+        print("Chunk of downloaded articles data: {}".format(len(root)))
 
         with db_session() as session:
             for PubmedArticle in root.iter("PubmedArticle"):
                 PMID = PubmedArticle.find("MedlineCitation").find("PMID").text
                 ArticleTitle = PubmedArticle.find(".//ArticleTitle").text
-                Year = PubmedArticle.find(".//PubDate").find("Year").text
-                Month = PubmedArticle.find(".//PubDate").find("Month").text
+
+                PubDate = PubmedArticle.find(".//PubDate")
+                MedlineDate = None
+                Year = None
+                Month = None
+                if PubDate.find("Year") and PubDate.find("Month"):
+                    Year = PubmedArticle.find(".//PubDate").find("Year").text
+                    Month = PubmedArticle.find(".//PubDate").find("Month").text
+                elif PubDate.find("MedlineDate"):
+                    MedlineDate = PubDate.find("MedlineDate").text
 
                 # Add record to DB
                 article = Article(
                     PMID=PMID,
                     Title=ArticleTitle,
-                    PublicationMonthStr=Year,
-                    PublicationMonth=Month)
+                    PublicationYear=Year,
+                    PublicationMonth=Month,
+                    MedlineDate=MedlineDate)
                 session.add(article)
 
-                Authors = PubmedArticle.find(".//AuthorList").findall("Author")
-                for auth in Authors:
-                    LastName = auth.find("LastName").text
-                    ForeName = auth.find("ForeName").text
-                    Initials = auth.find("Initials").text
+                if PubmedArticle.find(".//AuthorList"):
+                    Authors = PubmedArticle.find(".//AuthorList").findall(
+                        "Author")
+                    for auth in Authors:
+                        LastName = auth.find("LastName").text
+                        ForeName = auth.find("ForeName").text
+                        Initials = auth.find("Initials").text
 
-                    # Add record to DB
-                    author = Author(
-                        LastName=LastName,
-                        ForeName=ForeName,
-                        Initials=Initials,
-                        ArticlePMID=PMID)
-                    session.add(author)
+                        # Add record to DB
+                        author = Author(
+                            LastName=LastName,
+                            ForeName=ForeName,
+                            Initials=Initials,
+                            ArticlePMID=PMID)
+                        session.add(author)
 
     def populate_data(self, identifiers):
 

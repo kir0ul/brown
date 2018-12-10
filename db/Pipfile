@@ -11,7 +11,7 @@ pprint = "*"
 
 [packages]
 biopython = "*"
-sqlalchemy = "*"
+SQLAlchemy = "*"
 "psycopg2" = "*"
 
 [requires]

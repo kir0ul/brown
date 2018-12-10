@@ -15,8 +15,6 @@ POSTGRES_URL = "".join(
 
 engine = create_engine(POSTGRES_URL, echo=True)
 Base = declarative_base()
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
 
 
 @contextmanager
@@ -42,15 +40,23 @@ class Article(Base):
     Title = Column(String)
     PublicationYear = Column(Integer)
     PublicationMonth = Column(Integer)
-    parent = relationship("Article", back_populates="children")
+    MedlineDate = Column(String)
 
-    def __init__(self, PublicationMonth):
+    # parent = relationship("Article", back_populates="children")
+
+    def __init__(self, PMID, Title, PublicationYear, PublicationMonth,
+                 MedlineDate):
+        self.PMID = PMID,
+        self.Title = Title,
+        self.PublicationYear = PublicationYear,
         self.PublicationMonth = MapStrMonthToInt(PublicationMonth)
+        self.MedlineDate = MedlineDate
 
     def __repr__(self):
         return "<Article(PMID={}, Title={}, PublicationDate={})>".format(
-            self.PMID, self.Title, "/".join(self.PublicationYear,
-                                            self.PublicationMonth))
+            self.PMID, self.Title,
+            "/".join(self.PublicationYear, self.PublicationMonth)
+            or self.MedlineDate)
 
 
 class Author(Base):
@@ -60,8 +66,10 @@ class Author(Base):
     LastName = Column(String)
     ForeName = Column(String)
     Initials = Column(String)
-    ArticlePMID = Column(Integer, ForeignKey('articles.PMID'), nullable=False)
-    children = relationship("Article", back_populates="parent")
+    ArticlePMID = Column(
+        String)  #, ForeignKey('articles.PMID'), nullable=False)
+
+    # children = relationship("Article", back_populates="parent")
 
     def __repr__(self):
         return "<Author(LastName={}, ForeName={}, PMID={})>".format(
@@ -80,3 +88,24 @@ def MapStrMonthToInt(str):
             break
 
     return res
+
+
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+# # check register table exist to Modal
+# for _t in Modal.metadata.tables:
+#     print(_t)
+
+# # check all table in database
+# meta = MetaData(engine, reflect=True)
+# for _t in meta.tables:
+#     print(_t)
+
+# # check table names exists via inspect
+# ins = inspect(engine)
+# for _t in ins.get_table_names():
+#     print(_t)
+
+for _t in Base.metadata.tables:
+    print("Table: ", _t)
