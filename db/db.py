@@ -71,9 +71,15 @@ class db():
                     Authors = PubmedArticle.find(".//AuthorList").findall(
                         "Author")
                     for auth in Authors:
-                        LastName = auth.find("LastName").text
-                        ForeName = auth.find("ForeName").text
-                        Initials = auth.find("Initials").text
+                        LastName = None
+                        ForeName = None
+                        Initials = None
+                        if auth.find("LastName"):
+                            LastName = auth.find("LastName").text
+                        if auth.find("ForeName"):
+                            ForeName = auth.find("ForeName").text
+                        if auth.find("Initials"):
+                            Initials = auth.find("Initials").text
 
                         # Add record to DB
                         author = Author(
