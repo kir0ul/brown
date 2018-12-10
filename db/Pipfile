@@ -11,6 +11,8 @@ pprint = "*"
 
 [packages]
 biopython = "*"
+sqlalchemy = "*"
+"psycopg2" = "*"
 
 [requires]
 python_version = "3.5"
