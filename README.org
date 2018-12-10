@@ -23,3 +23,5 @@ Since I have a really small experience with front-end frameworks, and since time
 |Pulling data from PubMed|2h|
 |Database design |6h |
 
+
+* FDA 21 CFR 820.30

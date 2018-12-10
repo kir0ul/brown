@@ -49,14 +49,24 @@ class db():
                 ArticleTitle = PubmedArticle.find(".//ArticleTitle").text
 
                 PubDate = PubmedArticle.find(".//PubDate")
-                MedlineDate = None
                 Year = None
                 Month = None
-                if PubDate.find("Year") and PubDate.find("Month"):
-                    Year = PubmedArticle.find(".//PubDate").find("Year").text
-                    Month = PubmedArticle.find(".//PubDate").find("Month").text
-                elif PubDate.find("MedlineDate"):
-                    MedlineDate = PubDate.find("MedlineDate").text
+                MonthEnd = None
+                if PubDate.find("Year") is not None:
+                    Year = PubDate.find("Year").text
+                if PubDate.find("Month") is not None:
+                    Month = PubDate.find("Month").text
+                if PubDate.find("Day") is not None:
+                    import ipdb; ipdb.set_trace()
+                elif PubDate.find("MedlineDate") is not None:
+                    MedlineDate = PubDate.find("MedlineDate").text.split(" ")
+                    Year = MedlineDate[0]
+                    if len(MedlineDate) == 2:
+                        Range = MedlineDate[1].split("-")
+                        Month = Range[0]
+                        MonthEnd = Range[1]
+                    if len(MedlineDate) == 3:
+                        Month = MedlineDate[1]
 
                 # Add record to DB
                 article = Article(
@@ -64,29 +74,28 @@ class db():
                     Title=ArticleTitle,
                     PublicationYear=Year,
                     PublicationMonth=Month,
-                    MedlineDate=MedlineDate)
+                    PublicationMonthEnd=MonthEnd)
                 session.add(article)
 
-                if PubmedArticle.find(".//AuthorList"):
+                if PubmedArticle.find(".//AuthorList") is not None:
                     Authors = PubmedArticle.find(".//AuthorList").findall(
                         "Author")
                     for auth in Authors:
                         LastName = None
                         ForeName = None
                         Initials = None
-                        if auth.find("LastName"):
+                        if auth.find("LastName") is not None:
                             LastName = auth.find("LastName").text
-                        if auth.find("ForeName"):
+                        if auth.find("ForeName") is not None:
                             ForeName = auth.find("ForeName").text
-                        if auth.find("Initials"):
+                        if auth.find("Initials") is not None:
                             Initials = auth.find("Initials").text
 
                         # Add record to DB
                         author = Author(
                             LastName=LastName,
                             ForeName=ForeName,
-                            Initials=Initials,
-                            ArticlePMID=PMID)
+                            Initials=Initials)
                         session.add(author)
 
     def populate_data(self, identifiers):
