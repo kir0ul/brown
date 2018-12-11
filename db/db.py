@@ -52,21 +52,28 @@ class db():
                 Year = None
                 Month = None
                 MonthEnd = None
+                Day = None
+                DayEnd = None
                 if PubDate.find("Year") is not None:
                     Year = PubDate.find("Year").text
                 if PubDate.find("Month") is not None:
                     Month = PubDate.find("Month").text
                 if PubDate.find("Day") is not None:
-                    import ipdb; ipdb.set_trace()
+                    Day = PubDate.find("Day").text
                 elif PubDate.find("MedlineDate") is not None:
                     MedlineDate = PubDate.find("MedlineDate").text.split(" ")
                     Year = MedlineDate[0]
                     if len(MedlineDate) == 2:
+                        # Year + Month
                         Range = MedlineDate[1].split("-")
                         Month = Range[0]
                         MonthEnd = Range[1]
                     if len(MedlineDate) == 3:
+                        # Year + Month + Day
                         Month = MedlineDate[1]
+                        Range = MedlineDate[2].split("-")
+                        Day = Range[0]
+                        DayEnd = Range[1]
 
                 # Add record to DB
                 article = Article(
@@ -74,7 +81,9 @@ class db():
                     Title=ArticleTitle,
                     PublicationYear=Year,
                     PublicationMonth=Month,
-                    PublicationMonthEnd=MonthEnd)
+                    PublicationMonthEnd=MonthEnd,
+                    PublicationDay=Day,
+                    PublicationDayEnd=DayEnd)
                 session.add(article)
 
                 if PubmedArticle.find(".//AuthorList") is not None:

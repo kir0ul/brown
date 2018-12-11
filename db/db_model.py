@@ -41,21 +41,31 @@ class Article(Base):
     PublicationYear = Column(Integer)
     PublicationMonth = Column(Integer)
     PublicationMonthEnd = Column(Integer)
+    PublicationDay = Column(Integer)
+    PublicationDayEnd = Column(Integer)
 
     # parent = relationship("Author", back_populates="children")
 
     def __init__(self, PMID, Title, PublicationYear, PublicationMonth,
-                 PublicationMonthEnd):
+                 PublicationMonthEnd, PublicationDay, PublicationDayEnd):
         self.PMID = PMID,
         self.Title = Title,
         self.PublicationYear = PublicationYear,
         self.PublicationMonth = MapStrMonthToInt(PublicationMonth)
         self.PublicationMonthEnd = MapStrMonthToInt(PublicationMonthEnd)
+        self.PublicationDay = PublicationDay
+        self.PublicationDayEnd = PublicationDayEnd
 
     def __repr__(self):
+        PublicationDate = None
+        if self.PublicationYear:
+            PublicationDate = self.PublicationYear
+        if self.PublicationMonth:
+            PublicationDate = "/".joint(PublicationDate, self.PublicationMonth)
+        if self.PublicationDay:
+            PublicationDate = "/".joint(PublicationDate, self.PublicationDay)
         return "<Article(PMID={}, Title={}, PublicationDate={})>".format(
-            self.PMID, self.Title, "/".join(self.PublicationYear,
-                                            self.PublicationMonth))
+            self.PMID, self.Title, PublicationDate)
 
 
 class Author(Base):
