@@ -57,24 +57,10 @@ class db():
                 if PubDate.find("Month") is not None:
                     Month = PubDate.find("Month").text
                 if PubDate.find("Day") is not None:
-                    Day = PubDate.find("Day").text
+                    Day = int(PubDate.find("Day").text)
                 elif PubDate.find("MedlineDate") is not None:
                     MedlineDate = PubDate.find("MedlineDate").text
                     Year = int(MedlineDate[0:4])
-                    # MedlineDate = PubDate.find("MedlineDate").text.split(" ")
-                    # Year = MedlineDate[0]
-                    # if len(MedlineDate) == 2:
-                    #     # Year + Month
-                    #     Range = MedlineDate[1].split("-")
-                    #     Month = Range[0]
-                    #     MonthEnd = Range[1]
-                    # if len(MedlineDate) == 3:
-                    #     # Year + Month + Day
-                    #     Month = MedlineDate[1]
-                    #     Range = MedlineDate[2].split("-")
-                    #     Day = Range[0]
-                    #     if len(Range) > 1:
-                    #         DayEnd = Range[1]
 
                 # Add record to DB
                 article = Article(
@@ -98,12 +84,15 @@ class db():
                             ForeName = auth.find("ForeName").text
                         if auth.find("Initials") is not None:
                             Initials = auth.find("Initials").text
+                        ArticleId = session.query(Article.id).filter(
+                            Article.PMID == article.PMID).first().id
 
                         # Add record to DB
                         author = Author(
                             LastName=LastName,
                             ForeName=ForeName,
-                            Initials=Initials)
+                            Initials=Initials,
+                            ArticleId=ArticleId)
                         session.add(author)
 
     def populate_data(self, identifiers):

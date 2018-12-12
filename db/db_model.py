@@ -5,11 +5,10 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
-import sys
 
 USR = "postgres"
 PASS = "postgres"
-DOMAIN = "db"
+DOMAIN = "db"  # "db" for Docker, "localhost" otherwise
 PORT = "5432"
 POSTGRES_URL = "".join(
     ["postgresql://", USR, ":", PASS, "@", DOMAIN, ":", PORT])
@@ -42,8 +41,7 @@ class Article(Base):
     PublicationYear = Column(Integer)
     PublicationMonth = Column(Integer)
     PublicationDay = Column(Integer)
-
-    # parent = relationship("Author", back_populates="children")
+    parent = relationship("Author", back_populates="children")
 
     def __init__(self, PMID, Title, PublicationYear, PublicationMonth,
                  PublicationDay):
@@ -72,8 +70,8 @@ class Author(Base):
     LastName = Column(String)
     ForeName = Column(String)
     Initials = Column(String)
-    ArticleId = Column(Integer, ForeignKey("articles.id"))
-    children = relationship("Article")  #, back_populates="parent")
+    ArticleId = Column(Integer, ForeignKey("articles.id"), nullable=False)
+    children = relationship("Article", back_populates="parent")
 
     def __repr__(self):
         return "<Author(LastName={}, ForeName={}, PMID={})>".format(

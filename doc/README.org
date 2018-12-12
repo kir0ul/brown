@@ -1,10 +1,5 @@
 #+TITLE: README
 
-* Setup the app
-
-Just run ~docker-compose up~.
-
-
 * Design decisions
 
 ** Data
@@ -17,11 +12,15 @@ Since the =MySQL= official Docker image was more than 100MB, I thought it was ov
 Since I have a really small experience with front-end frameworks, and since time was limited, I choose the one I read it had the more gentle learning curve, e.g. =Vue.js=. Without the time limiting constraint, I would have chosen React.
 
 
+* Setup the app
+
+Just run ~docker-compose up~.
+
 * Time spent
 
 |Design decisions|2h|
 |Pulling data from PubMed|2h|
 |Database design |6h |
-
+|Docker containerization| 4h|
 
 * FDA 21 CFR 820.30
