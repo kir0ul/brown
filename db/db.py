@@ -43,8 +43,8 @@ class db():
         root = ET.fromstring(xml_text)
         print("Chunk of downloaded articles data: {}".format(len(root)))
 
-        with db_session() as session:
-            for PubmedArticle in root.iter("PubmedArticle"):
+        for PubmedArticle in root.iter("PubmedArticle"):
+            with db_session() as session:
                 PMID = PubmedArticle.find("MedlineCitation").find("PMID").text
                 ArticleTitle = PubmedArticle.find(".//ArticleTitle").text
 
@@ -73,7 +73,8 @@ class db():
                         Month = MedlineDate[1]
                         Range = MedlineDate[2].split("-")
                         Day = Range[0]
-                        DayEnd = Range[1]
+                        if len(Range) > 1:
+                            DayEnd = Range[1]
 
                 # Add record to DB
                 article = Article(

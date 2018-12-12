@@ -8,7 +8,7 @@ from contextlib import contextmanager
 
 USR = "postgres"
 PASS = "postgres"
-DOMAIN = "localhost"
+DOMAIN = "db"
 PORT = "5432"
 POSTGRES_URL = "".join(
     ["postgresql://", USR, ":", PASS, "@", DOMAIN, ":", PORT])
