@@ -26,6 +26,5 @@ services:
       - "80:8000"
     depends_on:
       - "db"
-    # command: ["./wait-for-it.sh", "db:5432", "--", "python", "db.py"]
-    command: ["wait-for-it", "db:5432", "--", "python", "db.py"]
     # command: ["./wait-for-postgres.sh", "db", "python", "db.py"]
+    command: ["wait-for-it", "db:5432", "--", "python", "-u", "db.py"]

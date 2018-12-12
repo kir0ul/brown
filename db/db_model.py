@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
 from contextlib import contextmanager
+import sys
 
 USR = "postgres"
 PASS = "postgres"
@@ -40,21 +41,17 @@ class Article(Base):
     Title = Column(String)
     PublicationYear = Column(Integer)
     PublicationMonth = Column(Integer)
-    PublicationMonthEnd = Column(Integer)
     PublicationDay = Column(Integer)
-    PublicationDayEnd = Column(Integer)
 
     # parent = relationship("Author", back_populates="children")
 
     def __init__(self, PMID, Title, PublicationYear, PublicationMonth,
-                 PublicationMonthEnd, PublicationDay, PublicationDayEnd):
+                 PublicationDay):
         self.PMID = PMID,
         self.Title = Title,
         self.PublicationYear = PublicationYear,
         self.PublicationMonth = MapStrMonthToInt(PublicationMonth)
-        self.PublicationMonthEnd = MapStrMonthToInt(PublicationMonthEnd)
         self.PublicationDay = PublicationDay
-        self.PublicationDayEnd = PublicationDayEnd
 
     def __repr__(self):
         PublicationDate = None

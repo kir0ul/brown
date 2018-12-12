@@ -51,30 +51,30 @@ class db():
                 PubDate = PubmedArticle.find(".//PubDate")
                 Year = None
                 Month = None
-                MonthEnd = None
                 Day = None
-                DayEnd = None
                 if PubDate.find("Year") is not None:
-                    Year = PubDate.find("Year").text
+                    Year = int(PubDate.find("Year").text)
                 if PubDate.find("Month") is not None:
                     Month = PubDate.find("Month").text
                 if PubDate.find("Day") is not None:
                     Day = PubDate.find("Day").text
                 elif PubDate.find("MedlineDate") is not None:
-                    MedlineDate = PubDate.find("MedlineDate").text.split(" ")
-                    Year = MedlineDate[0]
-                    if len(MedlineDate) == 2:
-                        # Year + Month
-                        Range = MedlineDate[1].split("-")
-                        Month = Range[0]
-                        MonthEnd = Range[1]
-                    if len(MedlineDate) == 3:
-                        # Year + Month + Day
-                        Month = MedlineDate[1]
-                        Range = MedlineDate[2].split("-")
-                        Day = Range[0]
-                        if len(Range) > 1:
-                            DayEnd = Range[1]
+                    MedlineDate = PubDate.find("MedlineDate").text
+                    Year = int(MedlineDate[0:4])
+                    # MedlineDate = PubDate.find("MedlineDate").text.split(" ")
+                    # Year = MedlineDate[0]
+                    # if len(MedlineDate) == 2:
+                    #     # Year + Month
+                    #     Range = MedlineDate[1].split("-")
+                    #     Month = Range[0]
+                    #     MonthEnd = Range[1]
+                    # if len(MedlineDate) == 3:
+                    #     # Year + Month + Day
+                    #     Month = MedlineDate[1]
+                    #     Range = MedlineDate[2].split("-")
+                    #     Day = Range[0]
+                    #     if len(Range) > 1:
+                    #         DayEnd = Range[1]
 
                 # Add record to DB
                 article = Article(
@@ -82,9 +82,7 @@ class db():
                     Title=ArticleTitle,
                     PublicationYear=Year,
                     PublicationMonth=Month,
-                    PublicationMonthEnd=MonthEnd,
-                    PublicationDay=Day,
-                    PublicationDayEnd=DayEnd)
+                    PublicationDay=Day)
                 session.add(article)
 
                 if PubmedArticle.find(".//AuthorList") is not None:
@@ -120,6 +118,7 @@ class db():
 
         # Get the data
         for idl in id_list:
+            print("Fetching data from Entrez...")
             handle = Entrez.efetch(
                 db=self.query_db, id=idl, retmax=RecordsCount, retmode="xml")
             xml_text = handle.read()
@@ -130,6 +129,7 @@ class db():
         RecordsCount = self.get_total_records_nb()
         identifiers = self.get_identifiers_list(RecordsCount)
         self.populate_data(identifiers)
+        print("All data correctly inserted in database")
 
 
 if __name__ == '__main__':
