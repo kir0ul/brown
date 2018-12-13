@@ -20,11 +20,20 @@ services:
     ports:
       - 8080:8080
 
-  db_data:
-    build: db/.
-    ports:
-      - "80:8000"
-    depends_on:
-      - "db"
-    # command: ["./wait-for-postgres.sh", "db", "python", "db.py"]
-    command: ["wait-for-it", "db:5432", "--", "python", "-u", "db.py"]
+  # db_data:
+  #   build: db/.
+  #   ports:
+  #     - "80:8000"
+  #   depends_on:
+  #     - "db"
+  #   # command: ["./wait-for-postgres.sh", "db", "python", "db.py"]
+  #   command: ["wait-for-it", "db:5432", "--", "python", "-u", "db.py"]
+
+  # back:
+  #   build: back/.
+  # container_name: back
+  #   ports:
+  #     - "3000:3000"
+  #   expose:
+  #     - "3000"
+  #   restart: always

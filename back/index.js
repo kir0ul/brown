@@ -1,8 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const db = require("./queries");
+
+// Run server
 const app = express();
 const port = 3000;
-
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -10,8 +12,18 @@ app.use(
   })
 );
 
+// API root
 app.get("/", (request, response) => {
-  response.json({ info: "Node.js, Express, and Postgres API" });
+  response.json({ info: "API root" });
+});
+
+// API routes
+app.get("/articles", db.getArticles);
+app.get("/authors", db.getAuthors);
+
+// No route found
+app.use(function(req, res) {
+  res.status(404).send({ url: req.originalUrl + " not found" });
 });
 
 app.listen(port, () => {
