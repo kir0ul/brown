@@ -31,7 +31,7 @@ services:
 
   # back:
   #   build: back/.
-  # container_name: back
+  #   container_name: back
   #   ports:
   #     - "3000:3000"
   #   expose:

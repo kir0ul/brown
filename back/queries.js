@@ -1,8 +1,16 @@
 const Sequelize = require("sequelize");
+var config = require("config");
 
-const sequelize = new Sequelize("postgres", "postgres", "postgres", {
-  host: "localhost",
-  dialect: "postgres",
+// Database config
+var dbName = config.get("database.name");
+var dbUsername = config.get("database.username");
+var dbPassword = config.get("database.password");
+var dbHost = config.get("database.host");
+var dbDialect = config.get("database.dialect");
+
+const sequelize = new Sequelize(dbName, dbUsername, dbPassword, {
+  host: dbHost,
+  dialect: dbDialect,
   operatorsAliases: false,
 
   pool: {
