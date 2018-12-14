@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 var config = require("config");
 
-// Database config
+////////// Database config //////////
 var dbName = config.get("database.name");
 var dbUsername = config.get("database.username");
 var dbPassword = config.get("database.password");
@@ -30,9 +30,7 @@ sequelize
     console.error("Unable to connect to the database:", err);
   });
 
-/////////////////////
-// Database model //
-///////////////////
+////////// Database model //////////
 const Article = sequelize.define(
   "article",
   {
@@ -63,11 +61,16 @@ const Authors = sequelize.define(
   }
 );
 
-//////////////
-// Queries //
-////////////
+////////// Queries //////////
 const getArticles = (request, response) =>
-  Article.findAll({ limit: 20 }).then(results => {
+  Article.findAll({
+    order: [
+      sequelize.literal('"PublicationYear" DESC NULLS LAST'),
+      sequelize.literal('"PublicationMonth" DESC NULLS LAST'),
+      sequelize.literal('"PublicationDay" DESC NULLS LAST')
+    ],
+    limit: 500
+  }).then(results => {
     response.status(200).json(results);
   });
 
