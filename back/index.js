@@ -19,7 +19,7 @@ app.get("/", (request, response) => {
 
 // API routes
 app.get("/articles", db.getArticles);
-app.get("/authors", db.getAuthors);
+app.get("/author/:lastname", db.SearchAuthor);
 
 // No route found
 app.use(function(req, res) {

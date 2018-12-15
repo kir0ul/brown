@@ -32,7 +32,7 @@ sequelize
 
 ////////// Database model //////////
 const Article = sequelize.define(
-  "article",
+  "articles",
   {
     id: { type: Sequelize.INTEGER, primaryKey: true },
     PMID: Sequelize.STRING,
@@ -46,8 +46,8 @@ const Article = sequelize.define(
     timestamps: false
   }
 );
-const Authors = sequelize.define(
-  "author",
+const Author = sequelize.define(
+  "authors",
   {
     id: { type: Sequelize.INTEGER, primaryKey: true },
     LastName: Sequelize.STRING,
@@ -60,6 +60,8 @@ const Authors = sequelize.define(
     timestamps: false
   }
 );
+Article.hasMany(Author, { foreignKey: "ArticleId" });
+Author.belongsTo(Article, { foreignKey: "id" });
 
 ////////// Queries //////////
 const getArticles = (request, response) =>
@@ -69,17 +71,35 @@ const getArticles = (request, response) =>
       sequelize.literal('"PublicationMonth" DESC NULLS LAST'),
       sequelize.literal('"PublicationDay" DESC NULLS LAST')
     ],
-    limit: 500
+    limit: 20
   }).then(results => {
     response.status(200).json(results);
   });
 
-const getAuthors = (request, response) =>
-  Authors.findAll({ limit: 20 }).then(results => {
-    response.status(200).json(results);
-  });
+// Must do the query by hand because this dumb ORM is unable to do a JOIN with the IDs you want...
+const SearchAuthor = (request, response) =>
+  sequelize
+    .query(
+      [
+        "SELECT *",
+        "FROM authors",
+        "JOIN articles",
+        'ON articles.id = authors."ArticleId"',
+        'WHERE "LastName" LIKE :queriedLastName',
+        'ORDER BY "PublicationYear" DESC NULLS LAST,',
+        '"PublicationMonth" DESC NULLS LAST,',
+        '"PublicationDay" DESC NULLS LAST'
+      ].join("\n"),
+      {
+        replacements: { queriedLastName: "%" + request.params.lastname + "%" },
+        type: sequelize.QueryTypes.SELECT
+      }
+    )
+    .then(results => {
+      response.status(200).json(results);
+    });
 
 module.exports = {
   getArticles,
-  getAuthors
+  SearchAuthor
 };
