@@ -30,6 +30,7 @@ class db():
 
     def get_identifiers_list(self, RecordsCount):
         """Get all identifiers"""
+        print("Searching on Entrez...")
         handle = Entrez.esearch(
             db=self.query_db, term=self.query, retmax=RecordsCount)
         records = Entrez.read(handle)

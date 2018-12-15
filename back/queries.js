@@ -72,9 +72,14 @@ const getArticles = (request, response) =>
       sequelize.literal('"PublicationDay" DESC NULLS LAST')
     ],
     limit: 20
-  }).then(results => {
-    response.status(200).json(results);
-  });
+  })
+    .then(results => {
+      response.status(200).json(results);
+    })
+    .catch(err => {
+      console.error(err);
+      response.status(500).send("Error...");
+    });
 
 // Must do the query by hand because this dumb ORM is unable to do a JOIN with the IDs you want...
 const SearchAuthor = (request, response) =>
@@ -97,8 +102,13 @@ const SearchAuthor = (request, response) =>
     )
     .then(results => {
       response.status(200).json(results);
+    })
+    .catch(err => {
+      console.error(err);
+      response.status(500).send("Error...");
     });
 
+// Export queries
 module.exports = {
   getArticles,
   SearchAuthor
