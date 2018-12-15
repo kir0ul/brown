@@ -38,6 +38,8 @@ services:
     expose:
       - "3000"
     restart: always
+    depends_on:
+      - "db"
 
   # front:
   #   build: front/.
