@@ -1,6 +1,9 @@
 FROM node:carbon-slim
 
-WORKDIR /usr/src/app
+# Simple HTTP server for static content serving
+RUN npm install -g http-server
+
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -8,6 +11,7 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8080
+RUN npm run build
 
-CMD ["npm", "run", "serve"]
+EXPOSE 8080
+CMD [ "http-server", "dist" ]

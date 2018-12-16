@@ -18,17 +18,17 @@ services:
     container_name: adminer
     restart: always
     ports:
-      - 8080:8080
+      - "8081:8081"
 
-  db_data:
-    build: db/.
-    container_name: db_data
-    ports:
-      - "80:8000"
-    depends_on:
-      - "db"
-    # command: ["./wait-for-postgres.sh", "db", "python", "db.py"]
-    command: ["wait-for-it", "db:5432", "--", "python", "-u", "db.py"]
+  # db_data:
+  #   build: db/.
+  #   container_name: db_data
+  #   ports:
+  #     - "80:8000"
+  #   depends_on:
+  #     - "db"
+  #   # command: ["./wait-for-postgres.sh", "db", "python", "db.py"]
+  #   command: ["wait-for-it", "db:5432", "--", "python", "-u", "db.py"]
 
   back:
     build: back/.
@@ -45,5 +45,5 @@ services:
   #   build: front/.
   #   container_name: front
   #   ports:
-  #     - "8080:8081"
+  #     - "8080:8080"
   #   restart: always

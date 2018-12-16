@@ -11,7 +11,7 @@ The /MySQL/ official Docker image was more than 100MB, I thought it was overkill
 #+NAME:   fig:db-diagram
 [[./db.png]]
 
-When the app is running, you can inspect the database with the /Adminer/ web client running in a container using the following URL: http://localhost:8080/?pgsql=db&username=postgres&db=postgres&ns=public
+When the app is running, you can inspect the database with the /Adminer/ web client running in a container using the following URL: http://localhost:8081/?pgsql=db&username=postgres&db=postgres&ns=public
 
 ** Back-end
 The assignment asked for a single page application, the back-end only being there to make the queries to the database, so I believe a simple /Node.js/ API with 3 routes should do the work. I used the /Sequelize/ ORM to query the database.
@@ -22,7 +22,7 @@ Since I have a really small experience with front-end frameworks, and since time
 
 * Setup the app
 
-Just run ~docker-compose up~ and open your browser at the following URL: http://localhost:8081/
+Just run ~docker-compose up~ and open your browser at the following URL: http://localhost:8080/
 
 * Time spent
 
