@@ -30,6 +30,7 @@ app.get("/", (request, response) => {
 // API routes
 app.get("/articles", db.getArticles);
 app.get("/author/:lastname", db.SearchAuthor);
+app.get("/dataviz", db.dataviz);
 
 // No route found
 app.use(function(req, res) {

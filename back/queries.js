@@ -108,8 +108,30 @@ const SearchAuthor = (request, response) =>
       response.status(500).send("Error...");
     });
 
+const dataviz = (request, response) =>
+  Article.findAll({
+    attributes: [
+      [sequelize.fn("COUNT", sequelize.col("id")), "articles_nb"],
+      "PublicationYear",
+      "PublicationMonth"
+    ],
+    group: ["PublicationYear", "PublicationMonth"],
+    order: [
+      sequelize.literal('"PublicationYear" ASC NULLS FIRST'),
+      sequelize.literal('"PublicationMonth" ASC NULLS FIRST')
+    ]
+  })
+    .then(results => {
+      response.status(200).json(results);
+    })
+    .catch(err => {
+      console.error(err);
+      response.status(500).send("Error...");
+    });
+
 // Export queries
 module.exports = {
   getArticles,
-  SearchAuthor
+  SearchAuthor,
+  dataviz
 };
