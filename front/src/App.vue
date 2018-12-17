@@ -26,6 +26,7 @@
       <v-tab-item v-for="i in 4" :value="'tab-' + i" :key="i">
         <v-content v-if="i === 2"> <DataTable /> </v-content>
         <v-content v-if="i === 3"> <Search /> </v-content>
+        <v-content v-if="i === 4"> <DataViz /> </v-content>
       </v-tab-item>
     </v-tabs>
   </v-app>
@@ -34,6 +35,7 @@
 <script>
 import DataTable from "./components/DataTable";
 import Search from "./components/Search";
+import DataViz from "./components/DataViz";
 
 export default {
   data() {
@@ -41,7 +43,8 @@ export default {
   },
   components: {
     DataTable,
-    Search
+    Search,
+    DataViz
   }
 };
 </script>

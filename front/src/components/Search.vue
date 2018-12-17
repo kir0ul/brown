@@ -1,35 +1,39 @@
 <template>
-  <v-form>
-    <v-container fluid>
-      <v-layout row wrap align-center>
-        <v-flex xs4 offset-xs4>
-          <v-text-field
-            v-on:keyup.enter="searchAuthor()"
-            label="Search author"
-            append-icon="search"
-            v-model="DefaultText"
-            clearable
-          ></v-text-field>
-        </v-flex>
+  <v-container fluid>
+    <v-layout row wrap align-center justify-center>
+      <v-flex xs4>
+        <v-text-field
+          label="Search author"
+          v-model="DefaultText"
+          clearable
+          v-on:keyup.enter="searchAuthor"
+        ></v-text-field>
+      </v-flex>
+      <v-flex xs1>
+        <v-btn flat icon v-on:click="searchAuthor">
+          <v-icon>search</v-icon>
+        </v-btn>
+      </v-flex>
+    </v-layout>
 
-        <v-flex xs12>
-          <v-data-table
-            :headers="headers"
-            :items="itemData"
-            hide-actions
-            class="elevation-1"
-          >
-            <template slot="items" slot-scope="props">
-              <td>{{ props.item.PMID }}</td>
-              <td class="text-xs-left">{{ props.item.Title }}</td>
-              <td class="text-xs-right">{{ props.item.Authors }}</td>
-              <td class="text-xs-right">{{ props.item.PublicationYear }}</td>
-            </template>
-          </v-data-table>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-form>
+    <v-layout row wrap align-center>
+      <v-flex xs12>
+        <v-data-table
+          :headers="headers"
+          :items="itemData"
+          hide-actions
+          class="elevation-1"
+        >
+          <template slot="items" slot-scope="props">
+            <td>{{ props.item.PMID }}</td>
+            <td class="text-xs-left">{{ props.item.Title }}</td>
+            <td class="text-xs-right">{{ props.item.Authors }}</td>
+            <td class="text-xs-right">{{ props.item.PublicationYear }}</td>
+          </template>
+        </v-data-table>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -58,7 +62,7 @@ export default {
   },
   methods: {
     searchAuthor: function() {
-      console.log(this.value);
+      console.log("Je suis passé par ici");
     }
   }
 };
