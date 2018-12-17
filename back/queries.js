@@ -63,37 +63,15 @@ const Author = sequelize.define(
 Article.hasMany(Author, { foreignKey: "ArticleId" });
 Author.belongsTo(Article, { foreignKey: "id" });
 
-/* const getArticles = (request, response) =>
- *   Article.findAll({
- *     order: [
- *       sequelize.literal('"PublicationYear" DESC NULLS LAST'),
- *       sequelize.literal('"PublicationMonth" DESC NULLS LAST'),
- *       sequelize.literal('"PublicationDay" DESC NULLS LAST')
- *     ],
- *     limit: 20
- *   })
- *     .then(results => {
- *       response.status(200).json(results);
- *     })
- *     .catch(err => {
- *       console.error(err);
- *       response.status(500).send("Error...");
- *     }); */
 const getArticles = (request, response) =>
-  sequelize
-    .query(
-      [
-        "SELECT *",
-        "FROM articles",
-        "JOIN authors",
-        'ON articles.id = authors."ArticleId"',
-        "GROUP BY articles.id, authors.id",
-        'ORDER BY "PublicationYear" DESC NULLS LAST,',
-        '"PublicationMonth" DESC NULLS LAST,',
-        '"PublicationDay" DESC NULLS LAST',
-        "LIMIT 20"
-      ].join("\n")
-    )
+  Article.findAll({
+    order: [
+      sequelize.literal('"PublicationYear" DESC NULLS LAST'),
+      sequelize.literal('"PublicationMonth" DESC NULLS LAST'),
+      sequelize.literal('"PublicationDay" DESC NULLS LAST')
+    ],
+    limit: 20
+  })
     .then(results => {
       response.status(200).json(results);
     })
@@ -101,6 +79,28 @@ const getArticles = (request, response) =>
       console.error(err);
       response.status(500).send("Error...");
     });
+/* const getArticles = (request, response) =>
+ *   sequelize
+ *     .query(
+ *       [
+ *         "SELECT *",
+ *         "FROM articles",
+ *         "JOIN authors",
+ *         'ON articles.id = authors."ArticleId"',
+ *         "GROUP BY articles.id, authors.id",
+ *         'ORDER BY "PublicationYear" DESC NULLS LAST,',
+ *         '"PublicationMonth" DESC NULLS LAST,',
+ *         '"PublicationDay" DESC NULLS LAST',
+ *         "LIMIT 20"
+ *       ].join("\n")
+ *     )
+ *     .then(results => {
+ *       response.status(200).json(results);
+ *     })
+ *     .catch(err => {
+ *       console.error(err);
+ *       response.status(500).send("Error...");
+ *     }); */
 
 // Must do the query by hand because this dumb ORM is unable to do a JOIN with the IDs you want...
 const SearchAuthor = (request, response) =>
@@ -134,18 +134,18 @@ const SearchAuthor = (request, response) =>
 
 const dataviz = (request, response) =>
   Article.findAll({
-    attributes: [
-      [sequelize.fn("COUNT", sequelize.col("id")), "articles_nb"],
-      "PublicationYear",
-      "PublicationMonth"
-    ],
-    group: ["PublicationYear", "PublicationMonth"],
-    order: [
-      sequelize.literal('"PublicationYear" ASC NULLS FIRST'),
-      sequelize.literal('"PublicationMonth" ASC NULLS FIRST')
-    ]
+      attributes: [
+          [sequelize.fn("COUNT", sequelize.col("id")), "value"],
+          ["PublicationYear", "name"]
+          /* "PublicationMonth" */
+      ],
+      group: ["name"] /* , "PublicationMonth"], */,
+      order: [
+          sequelize.literal('"name" ASC NULLS FIRST')
+          /* sequelize.literal('"PublicationMonth" ASC NULLS FIRST') */
+      ]
   })
-    .then(results => {
+         .then(results => {
       response.status(200).json(results);
     })
     .catch(err => {

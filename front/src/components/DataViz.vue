@@ -12,42 +12,60 @@
 <script>
 // import LineChart from "britecharts/dist/umd/line.min";
 import BarChart from "britecharts/dist/umd/bar.min";
+import colors from "britecharts/dist/umd/colors.min";
 const d3Selection = require("d3-selection");
+import axios from "axios";
+const url = "http://localhost:3000/dataviz";
 
 export default {
   data() {
-    return {
-      data: [
-        { name: "Shiny", id: 1, quantity: 86, percentage: 5 },
-        { name: "Blazing", id: 2, quantity: 300, percentage: 18 },
-        { name: "Dazzling", id: 3, quantity: 276, percentage: 16 },
-        { name: "Radiant", id: 4, quantity: 195, percentage: 11 },
-        { name: "Sparkling", id: 5, quantity: 36, percentage: 2 },
-        { name: "Other", id: 0, quantity: 814, percentage: 48 }
-      ]
-    };
+    return {};
   },
   methods: {
     createHorizontalBarChart: function() {
-      let barChart = new BarChart(),
-        margin = {
-          left: 120,
-          right: 20,
-          top: 20,
-          bottom: 30
-        },
-        barContainer = d3Selection.select(".js-bar-container"),
-        containerWidth = barContainer.node()
-          ? barContainer.node().getBoundingClientRect().width
-          : false;
-      barChart
-        .margin(margin)
-        .width(containerWidth)
-        .valueLabel("percentage")
-        .height(300);
-      // .colorSchema(britecharts.colors.colorSchemas.britechartsColorSchema)
+      axios({
+        method: "GET",
+        url: url
+      }).then(
+        response => {
+            var data = response.data;
+            // dataset.forEach(element => {
+            //     element.value = parseInt(element.value);
+            //     element.name = String(element.name);
+            // });
+            var dataset = data.map(item => {
+                console.log(item);
+                item.value = parseInt(item.value);
+                item.name = String(item.name);
+                console.log(item);
+                return item;
+            })
+          console.log(dataset);
 
-      barContainer.datum(this.data).call(barChart);
+          let barChart = new BarChart(),
+            margin = {
+              left: 120,
+              right: 20,
+              top: 20,
+              bottom: 30
+            },
+            barContainer = d3Selection.select(".js-bar-container"),
+            containerWidth = barContainer.node()
+              ? barContainer.node().getBoundingClientRect().width
+              : false;
+          barChart
+            .margin(margin)
+            .width(containerWidth)
+            .colorSchema(colors.colorSchemas.britecharts)
+            .valueLabel("articles_nb")
+            .height(300);
+
+          barContainer.datum(dataset).call(barChart);
+        },
+        error => {
+          console.error(error);
+        }
+      );
     }
   }
 };

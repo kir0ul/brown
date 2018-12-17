@@ -13,22 +13,22 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
 
-  db_client:
-    image: adminer
-    container_name: adminer
-    restart: always
-    ports:
-      - "8081:8081"
-
-  # db_data:
-  #   build: db/.
-  #   container_name: db_data
+  # db_client:
+  #   image: adminer
+  #   container_name: adminer
+  #   restart: always
   #   ports:
-  #     - "80:8000"
-  #   depends_on:
-  #     - "db"
-  #   # command: ["./wait-for-postgres.sh", "db", "python", "db.py"]
-  #   command: ["wait-for-it", "db:5432", "--", "python", "-u", "db.py"]
+  #     - "8081:8081"
+
+  db_data:
+    build: db/.
+    container_name: db_data
+    ports:
+      - "80:8000"
+    depends_on:
+      - "db"
+    # command: ["./wait-for-postgres.sh", "db", "python", "db.py"]
+    command: ["wait-for-it", "db:5432", "--", "python", "-u", "db.py"]
 
   back:
     build: back/.
@@ -41,11 +41,11 @@ services:
     depends_on:
       - "db"
 
-  # front:
-  #   build: front/.
-  #   container_name: front
-  #   ports:
-  #     - "8080:8080"
-  #   restart: always
-  #   depends_on:
-  #     - "back"
+  front:
+    build: front/.
+    container_name: front
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - "back"
