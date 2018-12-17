@@ -3,6 +3,7 @@
     <v-layout row wrap align-center justify-center>
       <v-flex xs4>
         <v-text-field
+          ref="SearchContent"
           label="Search author"
           v-model="DefaultText"
           clearable
@@ -27,7 +28,7 @@
           <template slot="items" slot-scope="props">
             <td>{{ props.item.PMID }}</td>
             <td class="text-xs-left">{{ props.item.Title }}</td>
-            <td class="text-xs-right">{{ props.item.Authors }}</td>
+            <td class="text-xs-right">{{ props.item.LastName }}</td>
             <td class="text-xs-right">{{ props.item.PublicationYear }}</td>
           </template>
         </v-data-table>
@@ -37,6 +38,9 @@
 </template>
 
 <script>
+import axios from "axios";
+const url = "http://localhost:3000/author/";
+
 export default {
   data() {
     return {
@@ -49,7 +53,7 @@ export default {
           value: "PMID"
         },
         { text: "Title", align: "center", sortable: true, value: "Title" },
-        { text: "Authors", align: "center", sortable: true, value: "Authors" },
+        { text: "Authors", align: "center", sortable: true, value: "LastName" },
         {
           text: "Publication year",
           align: "center",
@@ -62,7 +66,20 @@ export default {
   },
   methods: {
     searchAuthor: function() {
-      console.log("Je suis passé par ici");
+      let SearchedAuthor = this.$refs.SearchContent.value;
+      if (SearchedAuthor) {
+        axios({
+          method: "GET",
+          url: url + SearchedAuthor
+        }).then(
+          response => {
+            this.itemData = response.data;
+          },
+          error => {
+            console.error(error);
+          }
+        );
+      }
     }
   }
 };
