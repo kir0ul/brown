@@ -63,16 +63,37 @@ const Author = sequelize.define(
 Article.hasMany(Author, { foreignKey: "ArticleId" });
 Author.belongsTo(Article, { foreignKey: "id" });
 
-////////// Queries //////////
+/* const getArticles = (request, response) =>
+ *   Article.findAll({
+ *     order: [
+ *       sequelize.literal('"PublicationYear" DESC NULLS LAST'),
+ *       sequelize.literal('"PublicationMonth" DESC NULLS LAST'),
+ *       sequelize.literal('"PublicationDay" DESC NULLS LAST')
+ *     ],
+ *     limit: 20
+ *   })
+ *     .then(results => {
+ *       response.status(200).json(results);
+ *     })
+ *     .catch(err => {
+ *       console.error(err);
+ *       response.status(500).send("Error...");
+ *     }); */
 const getArticles = (request, response) =>
-  Article.findAll({
-    order: [
-      sequelize.literal('"PublicationYear" DESC NULLS LAST'),
-      sequelize.literal('"PublicationMonth" DESC NULLS LAST'),
-      sequelize.literal('"PublicationDay" DESC NULLS LAST')
-    ],
-    limit: 20
-  })
+  sequelize
+    .query(
+      [
+        "SELECT *",
+        "FROM articles",
+        "JOIN authors",
+        'ON articles.id = authors."ArticleId"',
+        "GROUP BY articles.id, authors.id",
+        'ORDER BY "PublicationYear" DESC NULLS LAST,',
+        '"PublicationMonth" DESC NULLS LAST,',
+        '"PublicationDay" DESC NULLS LAST',
+        "LIMIT 20"
+      ].join("\n")
+    )
     .then(results => {
       response.status(200).json(results);
     })
@@ -90,13 +111,16 @@ const SearchAuthor = (request, response) =>
         "FROM authors",
         "JOIN articles",
         'ON articles.id = authors."ArticleId"',
-        'WHERE "LastName" LIKE :queriedLastName',
+        'WHERE LOWER("LastName") LIKE :queriedLastName',
         'ORDER BY "PublicationYear" DESC NULLS LAST,',
         '"PublicationMonth" DESC NULLS LAST,',
-        '"PublicationDay" DESC NULLS LAST'
+        '"PublicationDay" DESC NULLS LAST',
+        "LIMIT 20"
       ].join("\n"),
       {
-        replacements: { queriedLastName: "%" + request.params.lastname + "%" },
+        replacements: {
+          queriedLastName: "%" + request.params.lastname.toLowerCase() + "%"
+        },
         type: sequelize.QueryTypes.SELECT
       }
     )
