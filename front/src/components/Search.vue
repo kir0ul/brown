@@ -53,7 +53,7 @@ export default {
           value: "PMID"
         },
         { text: "Title", align: "center", sortable: true, value: "Title" },
-        { text: "Authors", align: "center", sortable: true, value: "LastName" },
+        { text: "Author", align: "center", sortable: true, value: "LastName" },
         {
           text: "Publication year",
           align: "center",

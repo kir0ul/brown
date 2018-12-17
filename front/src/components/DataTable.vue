@@ -8,7 +8,7 @@
     <template slot="items" slot-scope="props">
       <td>{{ props.item.PMID }}</td>
       <td class="text-xs-left">{{ props.item.Title }}</td>
-      <td class="text-xs-right">{{ props.item.Authors }}</td>
+      <!-- <td class="text-xs-right">{{ props.item.Authors }}</td> -->
       <td class="text-xs-right">{{ props.item.PublicationYear }}</td>
     </template>
   </v-data-table>
@@ -29,8 +29,13 @@ export default {
           value: "PMID"
         },
         { text: "Title", align: "center", sortable: true, value: "Title" },
-        { text: "Authors", align: "center", sortable: true, value: "Authors" },
-        { text: "Publication year", align: "center", sortable: true, value: "PublicationYear" }
+        // { text: "Authors", align: "center", sortable: true, value: "Authors" },
+        {
+          text: "Publication year",
+          align: "center",
+          sortable: true,
+          value: "PublicationYear"
+        }
       ],
       itemData: []
     };

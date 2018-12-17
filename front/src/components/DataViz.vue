@@ -5,6 +5,9 @@
         <v-btn block v-on:click="createHorizontalBarChart">Draw</v-btn>
       </v-flex>
       <v-flex xs12> <div class="js-bar-container"></div> </v-flex>
+      <v-flex xs6 text-xs-center>
+        <h3 v-show="show">Number of publications by year</h3>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -19,7 +22,9 @@ const url = "http://localhost:3000/dataviz";
 
 export default {
   data() {
-    return {};
+    return {
+      show: false
+    };
   },
   methods: {
     createHorizontalBarChart: function() {
@@ -28,19 +33,14 @@ export default {
         url: url
       }).then(
         response => {
-            var data = response.data;
-            // dataset.forEach(element => {
-            //     element.value = parseInt(element.value);
-            //     element.name = String(element.name);
-            // });
-            var dataset = data.map(item => {
-                console.log(item);
-                item.value = parseInt(item.value);
-                item.name = String(item.name);
-                console.log(item);
-                return item;
-            })
-          console.log(dataset);
+          var data = response.data;
+          var dataset = [];
+          for (let i = 0; i < data.length; i++) {
+            dataset.push({
+              val: Number(data[i].value),
+              name: String(data[i].name)
+            });
+          }
 
           let barChart = new BarChart(),
             margin = {
@@ -57,10 +57,14 @@ export default {
             .margin(margin)
             .width(containerWidth)
             .colorSchema(colors.colorSchemas.britecharts)
-            .valueLabel("articles_nb")
-            .height(300);
+            .valueLabel("val")
+            .height(300)
+            .yAxisLabel("Publications number")
+            .xAxisLabel("Year");
 
           barContainer.datum(dataset).call(barChart);
+
+          this.show = true;
         },
         error => {
           console.error(error);
