@@ -21,6 +21,8 @@ Since I have a really small experience with front-end frameworks, and since time
 
 For the visualization, I chose to use the /Britecharts/ library, which is built on top of /D3.js/, and which should require less time to learn how to use. Without the time limiting constraint, I would probably have chosen to go directly with /D3.js/.
 
+I am aware the design doesn't exactly conform with all the requirements. I was struggling with time at the end so I had to make some compromises. With a little bit more time I could make it exactly as required.
+
 
 * Setup the app
 
