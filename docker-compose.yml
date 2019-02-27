@@ -9,16 +9,14 @@ services:
       - "5432:5432"
     expose:
       - "5432"
-    restart: always
     environment:
       POSTGRES_PASSWORD: postgres
 
-  # db_client:
-  #   image: adminer
-  #   container_name: adminer
-  #   restart: always
-  #   ports:
-  #     - "8081:8081"
+  db_client:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8081:8081"
 
   db_data:
     build: db/.
@@ -37,7 +35,6 @@ services:
       - "3000:3000"
     expose:
       - "3000"
-    restart: always
     depends_on:
       - "db"
 
@@ -46,6 +43,5 @@ services:
     container_name: front
     ports:
       - "8080:8080"
-    restart: always
     depends_on:
       - "back"
